@@ -18,6 +18,8 @@ interface Video {
     video_platform?: string;
     content_type?: string;
     description?: string;
+    url?: string;
+    video_url?: string;
 }
 
 const MyVideos: React.FC = () => {
@@ -89,9 +91,44 @@ const MyVideos: React.FC = () => {
         setSelectedVideo(null);
     };
 
+    // Extract platform and video ID from URL
+    const extractVideoInfo = (url: string): { platform: string; videoId: string } | null => {
+        if (!url) return null;
+
+        // YouTube patterns
+        const youtubePatterns = [
+            /(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/)([a-zA-Z0-9_-]{11})/,
+            /youtube\.com\/shorts\/([a-zA-Z0-9_-]{11})/
+        ];
+
+        for (const pattern of youtubePatterns) {
+            const match = url.match(pattern);
+            if (match) return { platform: 'youtube', videoId: match[1] };
+        }
+
+        // Vimeo pattern
+        const vimeoMatch = url.match(/vimeo\.com\/(\d+)/);
+        if (vimeoMatch) return { platform: 'vimeo', videoId: vimeoMatch[1] };
+
+        // Google Drive pattern
+        const driveMatch = url.match(/drive\.google\.com\/file\/d\/([a-zA-Z0-9_-]+)/);
+        if (driveMatch) return { platform: 'google_drive', videoId: driveMatch[1] };
+
+        return null;
+    };
+
     const getVideoEmbedUrl = (video: Video) => {
-        const platform = video.video_platform || video.platform;
-        const videoId = video.video_id;
+        let platform = video.video_platform || video.platform;
+        let videoId = video.video_id;
+
+        // If platform or videoId is missing, try to extract from URL
+        if ((!platform || !videoId) && (video.url || video.video_url)) {
+            const extracted = extractVideoInfo(video.url || video.video_url || '');
+            if (extracted) {
+                platform = extracted.platform;
+                videoId = extracted.videoId;
+            }
+        }
 
         if (!platform || !videoId) return null;
 
@@ -101,6 +138,7 @@ const MyVideos: React.FC = () => {
             case 'vimeo':
                 return `https://player.vimeo.com/video/${videoId}`;
             case 'google_drive':
+            case 'googledrive':
                 return `https://drive.google.com/file/d/${videoId}/preview`;
             default:
                 return null;
