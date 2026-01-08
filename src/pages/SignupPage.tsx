@@ -18,7 +18,7 @@ const SignupPage: React.FC = () => {
         email: '',
         password: '',
         confirmPassword: '',
-        role: 'learner' as UserRole,
+        role: 'parent' as UserRole,
         grade: 10,
         subjects: [] as string[],
         language: 'en' as 'en' | 'zu',
@@ -204,28 +204,28 @@ const SignupPage: React.FC = () => {
 
                         {/* Form */}
                         <form onSubmit={handleSubmit} className="flex flex-col gap-4">
-                            {/* Role Selection */}
+                            {/* Role Selection - Only Parent */}
                             <div className="flex flex-col w-full">
-                                <p className="text-[#111418] dark:text-white text-base font-medium leading-normal pb-2">I am a...</p>
-                                <div className="grid grid-cols-3 gap-2">
-                                    {[
-                                        { role: 'learner', label: 'Learner', icon: 'school' },
-                                        { role: 'parent', label: 'Parent', icon: 'family_restroom' },
-                                        { role: 'teacher', label: 'Teacher', icon: 'cast_for_education' },
-                                    ].map((item) => (
-                                        <button
-                                            key={item.role}
-                                            type="button"
-                                            onClick={() => handleRoleChange(item.role as UserRole)}
-                                            className={`h-16 flex flex-col items-center justify-center gap-1 rounded-lg border ${formData.role === item.role
-                                                ? 'bg-primary text-white border-primary'
-                                                : 'border-[#dce0e5] dark:border-[#324467] bg-white dark:bg-[#192233] text-[#637588] dark:text-[#92a4c9] hover:bg-[#f0f2f4] dark:hover:bg-[#232f48]'
-                                                } transition-all`}
-                                        >
-                                            <span className="material-symbols-outlined text-xl">{item.icon}</span>
-                                            <span className="text-xs font-medium">{item.label}</span>
-                                        </button>
-                                    ))}
+                                <p className="text-[#111418] dark:text-white text-base font-medium leading-normal pb-2">Account Type</p>
+                                <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-4 mb-4">
+                                    <p className="text-sm text-slate-600 dark:text-slate-300">
+                                        <strong>Parent Registration Only:</strong> Only parents can create accounts.
+                                        Parents can then register their children as students from their dashboard.
+                                        Teachers must be registered by administrators.
+                                    </p>
+                                </div>
+                                <div className="grid grid-cols-1 gap-2">
+                                    <button
+                                        type="button"
+                                        onClick={() => handleRoleChange('parent' as UserRole)}
+                                        className={`h-16 flex flex-col items-center justify-center gap-1 rounded-lg border ${formData.role === 'parent'
+                                            ? 'bg-primary text-white border-primary'
+                                            : 'border-[#dce0e5] dark:border-[#324467] bg-white dark:bg-[#192233] text-[#637588] dark:text-[#92a4c9] hover:bg-[#f0f2f4] dark:hover:bg-[#232f48]'
+                                            } transition-all`}
+                                    >
+                                        <span className="material-symbols-outlined text-xl">family_restroom</span>
+                                        <span className="text-xs font-medium">Parent Account</span>
+                                    </button>
                                 </div>
                             </div>
 

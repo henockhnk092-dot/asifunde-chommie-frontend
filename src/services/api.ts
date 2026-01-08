@@ -75,6 +75,16 @@ export const api = {
       apiClient.get(`/parent/child-quiz-results/${learnerId}`),
   },
 
+  // Admin endpoints
+  admin: {
+    registerTeacher: (data: any) => apiClient.post('/admin/register-teacher', data),
+    registerParent: (data: any) => apiClient.post('/admin/register-parent', data),
+    registerStudent: (data: any) => apiClient.post('/admin/register-student', data),
+    getUsers: (filters?: any) => apiClient.get('/admin/users', { params: filters }),
+    toggleUserStatus: (userId: number, is_active: boolean) =>
+      apiClient.patch(`/admin/users/${userId}/status`, { is_active }),
+  },
+
   // Subscription endpoints
   subscriptions: {
     getCurrent: () => apiClient.get('/subscriptions/current'),
@@ -114,6 +124,7 @@ export const api = {
     getResults: (attemptId: number) =>
       apiClient.get(`/quizzes/results/${attemptId}`),
     getUserAttempts: () => apiClient.get('/quizzes/my-attempts'),
+    getStudentResults: (filters?: any) => apiClient.get('/quizzes/student-results/all', { params: filters }),
   },
 
   // Progress endpoints
@@ -182,6 +193,7 @@ export const api = {
     getAll: (filters?: any) => apiClient.get('/courses', { params: filters }),
     getById: (id: number) => apiClient.get(`/courses/${id}`),
     getMyCourses: () => apiClient.get('/courses/my-courses'),
+    getMyStudents: () => apiClient.get('/courses/my-students'),
     getMyEnrollments: () => apiClient.get('/courses/enrollments/my'),
     create: (data: any) => apiClient.post('/courses', data),
     update: (id: number, data: any) => apiClient.put(`/courses/${id}`, data),

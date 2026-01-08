@@ -56,11 +56,15 @@ const MyMaterials: React.FC = () => {
         setSelectedMaterial(null);
     };
 
-    const handleDelete = async (id: number) => {
+    const handleDelete = async (id: number, closeModal: boolean = false) => {
         if (window.confirm("Are you sure you want to delete this material?")) {
             try {
                 await api.content.delete(id);
-                setMaterials(materials.filter(m => m.id !== id));
+                // Refresh the materials list from server to ensure sync
+                await fetchMyMaterials();
+                if (closeModal) {
+                    handleCloseModal();
+                }
             } catch (err: any) {
                 alert('Failed to delete material: ' + (err.response?.data?.error || err.message));
             }
@@ -326,10 +330,7 @@ const MyMaterials: React.FC = () => {
                                         {selectedMaterial.is_published ? 'Unpublish' : 'Publish'}
                                     </button>
                                     <button
-                                        onClick={() => {
-                                            handleDelete(selectedMaterial.id);
-                                            handleCloseModal();
-                                        }}
+                                        onClick={() => handleDelete(selectedMaterial.id, true)}
                                         className="flex items-center gap-2 px-4 py-2 bg-red-100 text-red-700 hover:bg-red-200 dark:bg-red-900/30 dark:text-red-300 rounded-lg font-bold transition-colors"
                                     >
                                         <span className="material-symbols-outlined">delete</span>
